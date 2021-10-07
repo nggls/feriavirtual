@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface UsuarioDao {
 
-    List<Usuario> getUsuarios();
+    List<Usuario> listar();
 
     void eliminar(String rut);
 

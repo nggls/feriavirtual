@@ -20,7 +20,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
 
     @Override
-    public List<Usuario> getUsuarios() {
+    public List<Usuario> listar() {
         String query = "FROM Usuario";
         return entityManager.createQuery(query).getResultList();
 
