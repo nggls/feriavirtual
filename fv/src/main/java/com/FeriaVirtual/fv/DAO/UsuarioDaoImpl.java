@@ -1,19 +1,23 @@
 package com.FeriaVirtual.fv.DAO;
 
 import com.FeriaVirtual.fv.models.Usuario;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 @Transactional
 public class UsuarioDaoImpl implements UsuarioDao {
-
     @PersistenceContext
     private EntityManager entityManager;
+
 
     @Override
     public List<Usuario> getUsuarios() {
@@ -32,20 +36,28 @@ public class UsuarioDaoImpl implements UsuarioDao {
     public void registrar(Usuario usuario) {
         entityManager.merge(usuario);
     }
+    @Override
+    public void actualizar(Usuario usuario) {
+        entityManager.merge(usuario);
+    }
 
-    //@Override
-    // void actualizar(Usuario usuario) {
-    //    String query = "UPDATE "
-    //}
 
     @Override
     public boolean verificarCredenciales(Usuario usuario) {
-        String query = "FOM Usuario WHERE rut = :rut AND clave = :clave";
+        String query = "FROM Usuario WHERE correo = :correo";
         List<Usuario> lista = entityManager.createQuery(query)
-                .setParameter("rut", usuario.getRut())
-                .setParameter("clave", usuario.getClave())
+                .setParameter("correo", usuario.getCorreo())
                 .getResultList();
-        return !lista.isEmpty();
+        if (lista.isEmpty()) {
+            return false;
+        }
+        String passwordHashed = lista.get(0).getClave();
+
+
+        Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+        return argon2.verify(passwordHashed, usuario.getClave());
+
+
 
     }
 }

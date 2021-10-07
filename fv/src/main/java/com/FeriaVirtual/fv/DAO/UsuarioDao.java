@@ -14,6 +14,6 @@ public interface UsuarioDao {
 
     boolean verificarCredenciales(Usuario usuario);
 
-    // void actualizar(Usuario usuario);
-
+    void actualizar(Usuario usuario);
+    
 }
